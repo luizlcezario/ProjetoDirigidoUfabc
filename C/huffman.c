@@ -131,8 +131,8 @@ void compressWithHuffman(LZ77Tuple data[], int freq[], int size, char** codes, i
     int arr[MAX_TREE_HT], top = 0;
     int index = 0;
     generateHuffmanCodes(root, arr, top, codes, &index);
-    for (int i = 0; i < tuple_count; i++) {
-        printf("%s", codes[i]);
-    }
-    printf("\n");
+    // for (int i = 0; i < tuple_count; i++) {
+    //     // printf("%s", codes[i]);
+    // }
+    // printf("\n");
 }

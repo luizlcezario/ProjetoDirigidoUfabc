@@ -1,9 +1,9 @@
 #ifndef Process_h
 #define Process_h
-#define MAX_TREE_HT 100
+#define MAX_TREE_HT 100000000
 #define WINDOW_SIZE 4096
 #define LOOKAHEAD_BUFFER_SIZE 15
-#define MAX_TUPLES 1000
+#define MAX_TUPLES 100000000
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>

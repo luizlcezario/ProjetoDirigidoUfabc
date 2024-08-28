@@ -1,6 +1,6 @@
 use crate::lz;
 
-const MAX_TREE_HT: usize = 100;
+const MAX_TREE_HT: usize = 100000000;
 
 #[derive(Debug, Clone)]
 pub struct MinHeapNodeLZ77 {
@@ -118,10 +118,10 @@ pub fn compress_with_huffman(data: &[lz::LZ77Tuple], freq: &[usize], codes: &mut
 
     generate_huffman_codes(&root, &mut arr, top, codes);
 
-    for code in codes.iter() {
-        print!("{}", code);
-    }
-    println!();
+    // for code in codes.iter() {
+    //     // print!("{}", code);
+    // }
+    // println!();
 }
 
 
