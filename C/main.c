@@ -18,22 +18,7 @@ void calculate_frequencies(LZ77Tuple* tuples, int size, int* freq) {
     }
 }
 
-char *generateCompress(char *input) {
-    LZ77Tuple lz77_output[MAX_TUPLES];
-    int lz77_output_size = 0;
-    int freq[MAX_TUPLES];
 
-    // Compressão LZ77
-    lz77_compress(input, lz77_output, &lz77_output_size);
-
-    // Array de frequências
-    calculate_frequencies(lz77_output, lz77_output_size, freq);
-
-    char codes[lz77_output_size][10];
-    compressWithHuffman(lz77_output, freq, lz77_output_size, (char **)codes, lz77_output_size);
-
-    
-}
 
 
 char* read_file(const char* filename) {
@@ -70,6 +55,30 @@ char* read_file(const char* filename) {
     return buffer;
 }
 
+char *generateCompress(char *input) {
+    LZ77Tuple *lz77_output = malloc(sizeof(LZ77Tuple) * MAX_TUPLES);
+    int lz77_output_size = 0;
+    int *freq = malloc(sizeof(int) * MAX_TUPLES);
+
+    // Compressão LZ77
+    lz77_compress(input, lz77_output, &lz77_output_size);
+
+    // Array de frequências
+    calculate_frequencies(lz77_output, lz77_output_size, freq);
+
+    char **codes = (char **)malloc(sizeof(char *) * lz77_output_size);
+    for (int i = 0; i < lz77_output_size; i++) {
+        codes[i] = (char *)malloc(sizeof(char) * 10);
+    }
+    compressWithHuffman(lz77_output, freq, lz77_output_size, (char **)codes, lz77_output_size);
+    free(lz77_output);
+    free(freq);
+    for (int i = 0; i < lz77_output_size; i++) {
+        free(codes[i]);
+    }
+    free(codes);
+    
+}
 int main(int argc, char **argv) {
     if (argc != 2) {
         char usage[] = "abracadabra";
@@ -77,6 +86,7 @@ int main(int argc, char **argv) {
     } else {
         char * file = read_file(argv[1]);
         generateCompress(file);
+        free(file);
     }
     return 0;
 }

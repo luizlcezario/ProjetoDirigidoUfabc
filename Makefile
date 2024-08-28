@@ -8,7 +8,7 @@ SRC = main.c huffman.c lz.c
 all: $(NAME) $(NAME2)
 
 $(NAME): 
-	gcc -O3 -o $(NAME) $(addprefix C/, $(SRC))
+	gcc -g3 -o $(NAME) $(addprefix C/, $(SRC))
 
 $(NAME2):
 	cd rust && cargo build --release 

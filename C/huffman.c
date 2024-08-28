@@ -1,8 +1,11 @@
 
 #include "process.h"
 // Estrutura para armazenar as tuplas do LZ77
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-// Função para criar um novo nó de árvore de Huffman para LZ77
+
 struct MinHeapNodeLZ77* newNodeLZ77(LZ77Tuple tuple, unsigned freq) {
     struct MinHeapNodeLZ77* temp = (struct MinHeapNodeLZ77*)malloc(sizeof(struct MinHeapNodeLZ77));
     temp->left = temp->right = NULL;
@@ -11,7 +14,7 @@ struct MinHeapNodeLZ77* newNodeLZ77(LZ77Tuple tuple, unsigned freq) {
     return temp;
 }
 
-
+// Função para criar um novo nó de árvore de Huffman para LZ77
 // Função para criar uma heap mínima
 struct MinHeap* createMinHeap(unsigned capacity) {
     struct MinHeap* minHeap = (struct MinHeap*)malloc(sizeof(struct MinHeap));
@@ -19,6 +22,12 @@ struct MinHeap* createMinHeap(unsigned capacity) {
     minHeap->capacity = capacity;
     minHeap->array = (struct MinHeapNodeLZ77**)malloc(minHeap->capacity * sizeof(struct MinHeapNodeLZ77*));
     return minHeap;
+}
+
+// Função para liberar a memória da MinHeap
+void freeMinHeap(struct MinHeap* minHeap) {
+    free(minHeap->array); // Libera o array de nós
+    free(minHeap);        // Libera a estrutura MinHeap
 }
 
 // Função para trocar dois nós
@@ -99,8 +108,26 @@ struct MinHeapNodeLZ77* buildHuffmanTreeLZ77(LZ77Tuple data[], int freq[], int s
     }
 
     // O nó restante na heap é a raiz da árvore de Huffman
-    return extractMin(minHeap);
+    struct MinHeapNodeLZ77* root = extractMin(minHeap);
+    freeMinHeap(minHeap); // Liberar a memória da heap
+    return root;
 }
+
+void freeHuffmanTree(struct MinHeapNodeLZ77* root) {
+    if (root == NULL) {
+        return;
+    }
+
+    // Liberar os nós da subárvore esquerda
+    freeHuffmanTree(root->left);
+
+    // Liberar os nós da subárvore direita
+    freeHuffmanTree(root->right);
+
+    // Liberar o próprio nó
+    free(root);
+}
+
 
 // Função para gerar os códigos Huffman a partir da árvore de Huffman
 void generateHuffmanCodes(struct MinHeapNodeLZ77* root, int arr[], int top, char** codes, int* index) {
@@ -115,7 +142,11 @@ void generateHuffmanCodes(struct MinHeapNodeLZ77* root, int arr[], int top, char
     }
 
     if (!(root->left) && !(root->right)) {
-        codes[*index] = (char*)malloc(top + 1);
+        codes[*index] = (char*)malloc(top + 1);  // Aloca memória para o código
+        if (codes[*index] == NULL) {
+            fprintf(stderr, "Erro ao alocar memória para códigos Huffman\n");
+            exit(1);
+        }
         for (int i = 0; i < top; ++i) {
             codes[*index][i] = arr[i] + '0';
         }
@@ -128,11 +159,12 @@ void generateHuffmanCodes(struct MinHeapNodeLZ77* root, int arr[], int top, char
 void compressWithHuffman(LZ77Tuple data[], int freq[], int size, char** codes, int tuple_count) {
     struct MinHeapNodeLZ77* root = buildHuffmanTreeLZ77(data, freq, size);
 
-    int arr[MAX_TREE_HT], top = 0;
+    int *arr = malloc(sizeof(int) * MAX_TREE_HT);
+    int top = 0;
     int index = 0;
     generateHuffmanCodes(root, arr, top, codes, &index);
-    // for (int i = 0; i < tuple_count; i++) {
-    //     // printf("%s", codes[i]);
-    // }
-    // printf("\n");
+
+    // Liberar memória alocada
+    free(arr);
+    freeHuffmanTree(root);
 }
