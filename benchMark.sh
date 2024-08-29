@@ -1,10 +1,11 @@
 
 echo "abracadabra"
-hyperfine -N "./compress_c" "./compress_rust"
+hyperfine -N --export-markdown TEST1.MD "./compress_c" "./compress_rust"
 echo "1 paragrapoh"
-hyperfine -N "./compress_c ./files_test/test1" "./compress_rust ./files_test/test1"
-
-echo "5 paragrapoh"
-hyperfine -N "./compress_c ./files_test/test2" "./compress_rust ./files_test/test2"
-echo "mega test"
-hyperfine -N "./compress_c ./files_test/test" "./compress_rust ./files_test/test"
+hyperfine -N --export-markdown TEST2.MD "./compress_c ./files_test/test1" "./compress_rust ./files_test/test1"
+echo "20 paragrapoh"
+hyperfine -N --export-markdown TEST3.MD "./compress_c ./files_test/test2" "./compress_rust ./files_test/test2"
+echo "100 paragrapoh"
+hyperfine -N --export-markdown TEST4.MD "./compress_c ./files_test/test3" "./compress_rust ./files_test/test3"
+echo "500 paragrapoh"
+hyperfine  --export-markdown TEST5.MD -N "./compress_c ./files_test/test" "./compress_rust ./files_test/test"
